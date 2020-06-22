@@ -64,7 +64,6 @@ class CameraFragment : Fragment() {
         textureView?.surfaceTextureListener = surfaceTextureListener
         takePictureButton = view.findViewById(R.id.btn_send) as Button
         takePictureButton?.setOnClickListener { takePicture() }
-        startCamera()
         return view
     }
 
@@ -121,13 +120,13 @@ class CameraFragment : Fragment() {
         }
     }
 
-    protected fun startBackgroundThread() {
+    private fun startBackgroundThread() {
         mBackgroundThread = HandlerThread("Camera Background")
         mBackgroundThread?.start()
         mBackgroundHandler = Handler(mBackgroundThread!!.getLooper())
     }
 
-    protected fun stopBackgroundThread() {
+    private fun stopBackgroundThread() {
         mBackgroundThread!!.quitSafely()
         try {
             mBackgroundThread!!.join()
@@ -138,7 +137,7 @@ class CameraFragment : Fragment() {
         }
     }
 
-    protected fun takePicture() {
+    private fun takePicture() {
         if (cameraDevice == null) {
             return
         }
@@ -228,7 +227,7 @@ class CameraFragment : Fragment() {
 
     private fun createCameraPreview() {
         try {
-            val texture = textureView!!.surfaceTexture!!
+            val texture = textureView?.surfaceTexture ?: return
             texture.setDefaultBufferSize(imageDimension!!.width, imageDimension!!.height)
             val surface = Surface(texture)
             captureRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
@@ -284,7 +283,7 @@ class CameraFragment : Fragment() {
             cameraDevice!!.close()
             cameraDevice = null
         }
-        imageReader.let {
+        imageReader?.let {
             imageReader!!.close()
             imageReader = null
         }
